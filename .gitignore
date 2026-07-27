@@ -1,0 +1,6 @@
+# PIN 暗号文の生成ツール。手元専用なので公開しない
+pin-tool.html
+
+# メモ・作業用
+*.local.*
+/private/
