@@ -337,7 +337,7 @@ function openModal(item) {
   document.getElementById("modalBadge").style.background = item.color || "#3182F6";
   document.getElementById("modalTitle").textContent = "PINコードを入力";
   document.getElementById("modalDesc").textContent =
-    `${item.title} を開くには ${item.pin} 桁のPINコードが必要です`;
+    `お伝えした ${item.pin || 4} 桁の PINコードを入力してください`;
   setMsg("", false);
   const inputs = buildPins(item.pin || 4);
   modal.classList.add("open");
