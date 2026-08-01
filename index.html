@@ -597,26 +597,33 @@ document.addEventListener("click", e => {
 const navLinks = [...document.querySelectorAll("[data-nav]")];
 const secs = SECTIONS.map(s => $(s.id)).filter(Boolean);
 
+const setActive = id =>
+  navLinks.forEach(a => a.classList.toggle("active", a.dataset.nav === id));
+
 let ticking = false;
 function onScroll(){
   if (ticking) return;
   ticking = true;
   requestAnimationFrame(() => {
-    const line = window.scrollY + window.innerHeight * .3;
+    ticking = false;
+    if (!secs.length) return;
+    /* 見出しが固定ナビの下をくぐったら、そのセクションを現在地にする */
+    const line = window.scrollY + $("nav").getBoundingClientRect().height + 4;
     let active = secs[0];
     secs.forEach(sec => { if (sec.offsetTop <= line) active = sec; });
-    navLinks.forEach(a => a.classList.toggle("active", active && a.dataset.nav === active.id));
-    ticking = false;
+    /* 最後のセクションは短くて上まで来ないので、最下部まで来たら現在地にする */
+    const atBottom =
+      window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+    if (atBottom) active = secs[secs.length - 1];
+    setActive(active.id);
   });
 }
 window.addEventListener("scroll", onScroll, { passive: true });
 window.addEventListener("resize", onScroll, { passive: true });
 onScroll();
 
-/* ナビをタップしたら、その項目を横スクロール内で見える位置へ */
-navLinks.forEach(a => a.addEventListener("click", () => {
-  a.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-}));
+/* タップした瞬間に下線を移す（スクロールの到達を待たない） */
+navLinks.forEach(a => a.addEventListener("click", () => setActive(a.dataset.nav)));
 
 /* ---------- 共有 ---------- */
 const toast = $("toast");
