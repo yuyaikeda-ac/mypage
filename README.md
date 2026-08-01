@@ -40,6 +40,7 @@ const PROFILE = {
 | `research` | 研究キーワード（`fields` に書けば補足も出る） | `keywords`, `fields` |
 | `career` | 期間つきのリスト（経歴・学歴・所属学会で使っている） | `items`（`period` / `title` / `org` / `note`。`title` 以外は省略可） |
 | `works` | 業績リスト（種類ごと） | `groups`（`label` / `items`） |
+| `contact` | 連絡先（タップで送信・発信できる） | `items`（`label` / `mail` または `tel` / `note`） |
 | `links` | リンクボタン | （`LINKS` を参照するので追加設定なし） |
 
 補足:
