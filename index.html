@@ -451,7 +451,7 @@ const SECTIONS = [
   },
 ];
 
-/* リンク。icon は linkedin / line / mail / x / github / note / researchmap / link から選択。
+/* リンク。icon は linkedin / line / instagram / mail / x / github / note / researchmap / link から選択。
    PIN や URL を変えるときは pin-tool.html で暗号文を作り直して enc を差し替える。 */
 const LINKS = [
   {
@@ -469,6 +469,13 @@ const LINKS = [
     pin:   4,
     enc:   "p+htg0aSvU6jNmxJwZxy9EVlqE9WKiglaS/aeGkZbLt+Ln74ZLUsCRFFSVW1lckwpNm+AwAKAccQq2iXacRPcsIXFfGGPwJCrybn",
     // desc: "…"  ← この行だけ PIN 入力画面の案内文を変えたいときに書く
+  },
+  {
+    title: "Instagram",
+    sub:   "日々の記録",
+    url:   "https://www.instagram.com/yuya_i02/",
+    icon:  "instagram",
+    color: "#E4405F",
   },
   // {
   //   title: "researchmap",
@@ -494,6 +501,7 @@ const LINKS = [
 const ICONS = {
   linkedin:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 110-4.13 2.07 2.07 0 010 4.13zM7.12 20.45H3.55V9h3.57v11.45z"/></svg>',
   line:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2c-4.97 0-9 3.27-9 7.3 0 3.6 3.2 6.63 7.52 7.2.29.06.69.19.79.44.09.22.06.58.03.81 0 0-.1.63-.13.77-.04.23-.18.9.79.49s5.26-3.1 7.18-5.31C20.5 13.4 21 12 21 10.5c0-4.03-4.03-7.3-9-7.3z"/><text x="12" y="12.8" text-anchor="middle" font-size="5.4" font-weight="800" letter-spacing=".2" fill="var(--brand)" font-family="Arial,Helvetica,sans-serif">LINE</text></svg>',
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>',
   mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h3.1l-6.8 7.8L21.8 21h-5.9l-4.6-6-5.3 6H2.9l7.3-8.3L2.6 3h6l4.2 5.5L17.5 3zm-1.1 16.1h1.7L7.7 4.8H5.9l10.5 14.3z"/></svg>',
   github:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.3-4-2.2-5.5-2.7M15 21v-3.4c0-1 .1-1.4-.5-2 2.4-.3 4.5-1.2 4.5-5.1 0-1.1-.4-2-1-2.7.1-.3.4-1.4-.1-2.8 0 0-.9-.3-3 1.1a10 10 0 00-5.3 0C7.5 3.7 6.6 4 6.6 4c-.5 1.4-.2 2.5-.1 2.8-.6.7-1 1.6-1 2.7 0 3.9 2.1 4.8 4.5 5.1-.4.4-.5.9-.5 1.5V21"/></svg>',
