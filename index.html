@@ -189,6 +189,15 @@
     font-family:var(--mono);font-size:var(--fs-xs);font-weight:500;
     color:var(--ink-3);letter-spacing:.03em;
   }
+  /* 年号の行（年号＋「査読付き」などのバッジを横並びにする） */
+  .row .hd{display:flex;align-items:center;gap:7px;margin-bottom:1px}
+  .row .hd .when{margin-bottom:0}
+  .badge{
+    display:inline-block;padding:1px 7px;border-radius:999px;
+    border:1px solid rgba(31,75,153,.28);background:rgba(31,75,153,.07);
+    color:var(--accent);font-size:11.5px;font-weight:700;
+    line-height:1.55;white-space:nowrap;
+  }
   .row .t{display:block;font-size:var(--fs-base);font-weight:700;line-height:1.65}
   .row .s{display:block;margin-top:1px;font-size:var(--fs-md);color:var(--ink-2);line-height:1.7}
   .row .m{display:block;margin-top:3px;font-size:var(--fs-sm);color:var(--ink-3);line-height:1.8}
@@ -378,6 +387,8 @@ const SECTIONS = [
     /* items が空のときは「なし」と表示されます（none: "…" で文言を変更可）
        { period: "2026.04 – 現在", title: "（役職・職種）", org: "（勤務先・団体）", note: "（補足）" }, */
     items: [
+      { period: "2026.05 – 2026.08", title: "ティーチングアシスタント（TA）", org: "鎮西学院大学", note: "担当科目：データサイエンス概論、データサイエンスⅠ" },
+      { period: "2025.10 – 2026.01", title: "ティーチングアシスタント（TA）", org: "鎮西学院大学", note: "担当科目：AI基礎" },
     ],
   },
 
@@ -386,7 +397,7 @@ const SECTIONS = [
     id: "education", nav: "学歴", title: "学歴",
     type: "career",
     items: [
-      { period: "2025.04 – 現在",    title: "博士前期課程", org: "長崎県立大学大学院 地域創生研究科 情報工学専攻",  },
+      { period: "2025.04 – 現在",    title: "博士前期課程（修士課程）", org: "長崎県立大学大学院 地域創生研究科 情報工学専攻",  },
     ],
   },
 
@@ -397,10 +408,11 @@ const SECTIONS = [
     groups: [
       {
         label: "論文",
+        /* refereed: true を書くと年号の横に「査読付き」バッジが付きます */
          items: [
-          { year: "2026", title: "長崎港に寄港するクルーズ客船観光客の満足度に基づく観光地の組み合わせに関する分析", meta: "池田悠耶，濱崎正一，平岡透 /産業応用工学会論文誌,14(2), 140-148", url: "https://doi.org/10.12792/jjiiae.14.2.140" },
-          { year: "2026", title: "長崎港に寄港するクルーズ客船乗客のクラス別観光満足度分析", meta: "濱崎正一，池田悠耶，平岡透 / 採録決定 巻(号), ページ", url: "" },
-          { year: "2026", title: "長崎県内高校生における長崎市のモノ・コト・環境に関する意識調査", meta: "平田菜美，池田悠耶，平岡透 / 採録決定 巻(号), ページ", url: "" },
+          { year: "2026", refereed: true, title: "長崎港に寄港するクルーズ客船観光客の満足度に基づく観光地の組み合わせに関する分析", meta: "池田悠耶，濱崎正一，平岡透 /産業応用工学会論文誌,14(2), 140-148", url: "https://doi.org/10.12792/jjiiae.14.2.140" },
+          { year: "2026", refereed: true, title: "長崎港に寄港するクルーズ客船乗客のクラス別観光満足度分析", meta: "濱崎正一，池田悠耶，平岡透 / 採録決定 日本地域創生学会", url: "" },
+          { year: "2026", refereed: true, title: "長崎県内高校生における長崎市のモノ・コト・環境に関する意識調査", meta: "平田菜美，池田悠耶，平岡透 / 採録決定 日本地域創生学会", url: "" },
         ],
       },
       {
@@ -442,6 +454,7 @@ const SECTIONS = [
        （…）が入っている間はリンクになりません。値を入れるとリンクになります。 */
     items: [
       { label: "メール（研究）", mail: "yuya.ac@outlook.com" },
+      { label: "メール（所属大学）", mail: "mc225001@sun.ac.jp" },
       { label: "メール（大学）", mail: "ta-ikeda@wesleyan.ac.jp" },
       { label: "電話",           tel:  "+81 80-9835-0833", note: "" },
     ],
@@ -473,13 +486,7 @@ const LINKS = [
     enc:   "p+htg0aSvU6jNmxJwZxy9EVlqE9WKiglaS/aeGkZbLt+Ln74ZLUsCRFFSVW1lckwpNm+AwAKAccQq2iXacRPcsIXFfGGPwJCrybn",
     // desc: "…"  ← この行だけ PIN 入力画面の案内文を変えたいときに書く
   },
-  {
-    title: "Instagram",
-    sub:   "日々の記録",
-    url:   "https://www.instagram.com/yuya_i02/",
-    icon:  "instagram",
-    color: "#E4405F",
-  },
+
   // {
   //   title: "researchmap",
   //   sub:   "研究業績",
@@ -552,8 +559,13 @@ const workRow = (w, hide) => {
   const open  = linked
     ? `<a class="row" href="${esc(w.url)}" target="_blank" rel="noopener noreferrer"`
     : `<div class="row"`;
+  /* refereed: true で「査読付き」バッジ。badge: "…" と書けば任意の文言にできる */
+  const badge = w.badge || (w.refereed ? "査読有り" : "");
   return `${open}${hide ? " hidden" : ""}>
-      <span class="when">${esc(w.year)}</span>
+      <span class="hd">
+        <span class="when">${esc(w.year)}</span>
+        ${badge ? `<span class="badge">${esc(badge)}</span>` : ""}
+      </span>
       <span class="t">${esc(w.title)}</span>
       ${w.meta ? `<span class="m">${esc(w.meta)}</span>` : ""}
       ${linked ? EXT : ""}
