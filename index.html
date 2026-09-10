@@ -282,6 +282,27 @@
   }
   .close:active{background:#F6F7F9}
 
+  /* ===== 最初に出るポップアップ ===== */
+  #welcome .sheet{max-width:360px;text-align:left;padding:24px 20px 16px}
+  #welcome .desc{margin-bottom:16px;font-size:var(--fs-sm)}
+  #welcome .desc:empty{display:none}
+  .wlinks{margin:0 0 16px;padding:0;list-style:none}
+  .wlinks li + li{margin-top:10px}
+  .wlink{
+    display:flex;align-items:center;gap:12px;
+    min-height:60px;padding:12px 14px;
+    border:1px solid var(--rule);border-radius:8px;
+  }
+  .wlink:active{background:#F6F7F9}
+  .wlink .ico{
+    width:34px;height:34px;flex:none;border-radius:7px;
+    display:grid;place-items:center;color:#fff;background:var(--brand);
+  }
+  .wlink .ico svg{width:19px;height:19px}
+  .wlink .ttl{flex:1;min-width:0;font-size:var(--fs-md);font-weight:700;line-height:1.5}
+  .wlink .sub{display:block;margin-top:1px;font-size:var(--fs-sm);font-weight:400;color:var(--ink-3)}
+  .wlink .arw{width:16px;height:16px;flex:none;color:var(--ink-3)}
+
   .toast{
     position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));
     transform:translateX(-50%);z-index:70;
@@ -449,6 +470,11 @@
     .link:hover .arw{transform:translateX(3px)}
     .link:hover{border-color:rgba(31,75,153,.35);background:#FAFBFD}
     .pins input:hover{border-color:var(--ink-3)}
+    .wlink{transition:border-color .18s,background-color .18s}
+    .wlink:hover{border-color:rgba(31,75,153,.35);background:#FAFBFD}
+    .wlink:hover .ttl{color:var(--accent)}
+    .wlink .arw{transition:transform .18s}
+    .wlink:hover .arw{transform:translateX(3px)}
   }
 
   /* キーボード操作の現在位置をはっきりさせる */
@@ -482,6 +508,16 @@
   <footer>
     <span id="footer-name">Yuya Ikeda</span> ・ <span id="footer-year"></span>
   </footer>
+</div>
+
+<!-- 最初に出るポップアップ -->
+<div class="modal" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <div class="sheet">
+    <h2 id="welcomeTitle"></h2>
+    <p class="desc" id="welcomeDesc"></p>
+    <ul class="wlinks" id="welcomeLinks"></ul>
+    <button class="close" id="welcomeClose" type="button">閉じる</button>
+  </div>
 </div>
 
 <!-- PIN 入力 -->
@@ -667,6 +703,32 @@ const LINKS = [
   //   color: "#5A6478",
   // },
 ];
+
+/* ページを開いた直後に出るポップアップ。
+   出したくないときは show を false にする。
+   url が空のボタンは表示されず、全部空ならポップアップ自体が出ない。 */
+const WELCOME = {
+  show:  true,
+  once:  false,                 // true にすると同じタブでは初回だけ出る
+  title: "研究について",
+  desc:  "研究業績と研究内容はこちらからご覧いただけます。",
+  buttons: [
+    {
+      title: "researchmap",
+      sub:   "研究業績",
+      url:   "https://researchmap.jp/yuyaikeda",
+      icon:  "researchmap",
+      color: "#0F6E62",
+    },
+    {
+      title: "個人研究ページ",
+      sub:   "研究内容の紹介",
+      url:   "https://ikeda-research.jp/",
+      icon:  "link",
+      color: "#1F4B99",
+    },
+  ],
+};
 
 /* ▲▲▲ 編集はここまで ▲▲▲ */
 
@@ -1009,6 +1071,58 @@ $("close").addEventListener("click", closeModal);
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+});
+
+/* ============================================================================
+   最初に出るポップアップ
+   ============================================================================ */
+const wel = $("welcome");
+let welFocus = null;
+
+function closeWelcome(){
+  if (!wel.classList.contains("open")) return;
+  wel.classList.remove("open");
+  if (welFocus && welFocus.focus) welFocus.focus();
+}
+
+(function initWelcome(){
+  const items = (WELCOME.buttons || []).filter(b => b.url);
+  if (!WELCOME.show || !items.length) return;
+
+  /* once:true のときは同じタブで1回だけ。使えない環境では毎回出す */
+  const KEY = "welcome-seen";
+  if (WELCOME.once) {
+    try {
+      if (sessionStorage.getItem(KEY)) return;
+      sessionStorage.setItem(KEY, "1");
+    } catch {}
+  }
+
+  $("welcomeTitle").textContent = WELCOME.title || "";
+  $("welcomeDesc").textContent  = WELCOME.desc  || "";
+  $("welcomeLinks").innerHTML = items.map(b => {
+    const ext = /^https?:/i.test(b.url);
+    return `
+      <li><a class="wlink" style="--brand:${esc(b.color || "#1F4B99")}"
+             href="${esc(b.url)}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ""}>
+        <span class="ico">${ICONS[b.icon] || ICONS.link}</span>
+        <span class="ttl">${esc(b.title)}${b.sub ? `<span class="sub">${esc(b.sub)}</span>` : ""}</span>
+        <span class="arw">${ARROW}</span>
+      </a></li>`;
+  }).join("");
+
+  welFocus = document.activeElement;
+  wel.classList.add("open");
+  setTimeout(() => { const f = wel.querySelector(".wlink"); if (f) f.focus(); }, 60);
+})();
+
+$("welcomeClose").addEventListener("click", closeWelcome);
+wel.addEventListener("click", e => {
+  if (e.target === wel) closeWelcome();           // 背景をタップして閉じる
+  if (e.target.closest(".wlink")) closeWelcome(); // リンクを開いたら閉じる
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeWelcome();
 });
 </script>
 </body>
